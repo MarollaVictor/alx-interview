@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 def validUTF8(data):
+    """Determine if a given data set represents a valid UTF-8 encoding."""
     num_following = 0
     for byte in data:
-        # Ensure we only consider the 8 least significant bits
-        byte = byte & 0xFF
+        byte = byte & 0xFF  # Consider only the 8 least significant bits
         if num_following == 0:
             # Determine the number of bytes for this character
             if (byte >> 7) == 0b0:
