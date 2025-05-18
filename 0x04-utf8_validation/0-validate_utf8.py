@@ -1,31 +1,26 @@
 #!/usr/bin/python3
+"""Validates if a given data set represents a valid UTF-8 encoding."""
+
 def validUTF8(data):
-    """Determine if a given data set represents a valid UTF-8 encoding."""
-    num_following = 0
+    """Check if a list of integers represents valid UTF-8 bytes."""
+    n_bytes = 0
     for byte in data:
-        byte = byte & 0xFF  # Consider only the 8 least significant bits
-        if num_following == 0:
-            # Determine the number of bytes for this character
+        byte = byte & 0xFF  # Ensure we only use the 8 least significant bits
+        if n_bytes == 0:
+            # Determine the number of continuation bytes
             if (byte >> 7) == 0b0:
-                # 1-byte character
-                num_following = 0
+                continue
             elif (byte >> 5) == 0b110:
-                # 2-byte character
-                num_following = 1
+                n_bytes = 1
             elif (byte >> 4) == 0b1110:
-                # 3-byte character
-                num_following = 2
+                n_bytes = 2
             elif (byte >> 3) == 0b11110:
-                # 4-byte character
-                num_following = 3
+                n_bytes = 3
             else:
-                # Invalid leading byte
-                if (byte >> 6) != 0b10:
-                    return False
+                return False
         else:
-            # check if continuation byte starts with 10
+            # Check continuation byte
             if (byte >> 6) != 0b10:
                 return False
-                num_following -= 1
-        # All characters must be complete
-        return num_following == 0
+            n_bytes -= 1
+    return n_bytes == 0
